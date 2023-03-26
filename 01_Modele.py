@@ -1,10 +1,8 @@
 import streamlit as st
-import base64
 import pandas as pd
 from typing import List, Union
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import MinMaxScaler
 import joblib
 
 # Dans le requirements.txt,
@@ -17,12 +15,12 @@ import joblib
 # Configurer la page
 # wide, centered
 # auto or expanded
-st.set_page_config(page_title="Projet intégrateur",
+st.set_page_config(page_title="Modèles de classification",
                    page_icon="img/favicon.ico",
                    layout="wide",
                    initial_sidebar_state="auto",
                    menu_items={
-                       "About": "Interface du modèle de Random Forests."}
+                       "About": "Modèles de classification avec forêts aléatoires (*Random Forests*)."}
 )
     
 # Cacher le menu officiel (hamburger)
@@ -269,11 +267,11 @@ metriques = pd.DataFrame([values], columns=keys)
 ##################################################
 # Construire l'interface de la page
 # 1ere partie
-st.title ("Modèles")
+st.title ("Modèles de classification")
 
 st.header("Instructions et résultats")
 
-st.markdown("Changer les métriques dans le bandeau de gauche pour alimenter les modèles. Les métriques colorées ont le plus d'influence sur les prévisions:")
+st.markdown("Changer les métriques dans le bandeau de gauche pour alimenter les modèles.<br> Les métriques :orange[colorées] ont le plus d'influence sur les prévisions:", unsafe_allow_html=True)
 
 st.caption(":orange[Genre], :orange[Âge], :orange[Taille (en cm)], :orange[Obésité dans la famille (présente ou passée)], Consommation d'aliments hypercaloriques, :orange[Consommation de légumes avec les repas], :orange[Nombre de repas quotidien], :orange[Collations entre les repas], Tabagisme, Consommation quotidienne d'eau (en litre), Surveillance de sa consommation calorique, Activité physique hebdomadaire (en jour), Temps quotidien d'utilisation d'appareils (en heure), Consommation d'alcool (avec ou sans repas) et Transport le plus utilisé.")
 
@@ -343,7 +341,7 @@ class rf_classification:
         self.resultat: RandomForestClassifier =\
             self.modele_1_prediction.predict(donnees3)
         if int(self.resultat) == 0:
-            return "non-obèse"
+            return "non obèse"
         else:
             return "obèse"
 
@@ -407,23 +405,39 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Modèle (1) binomial")
-    st.markdown(f"**Résultat**: :orange[{jeu.faire_classification_1()}]")
-    st.markdown("0: non-obèse<br> 1: obèse", unsafe_allow_html=True)
-    st.image("img/random-forests.png", caption="Random Forests", width=200)
+    st.markdown(f"**Prévision**: :orange[{jeu.faire_classification_1()}]")
+    st.markdown("Classifications possibles:<br> &nbsp;&nbsp;0: non obèse<br> &nbsp;&nbsp;1: obèse", unsafe_allow_html=True)
+    st.image("img/random-forests.png", width=225)
 
 
 with col2:
     st.subheader("Modèle (2) multinomial")
-    st.markdown(f"**Résultat**: :orange[{jeu.faire_classification_2()}]")
-    st.markdown("1: poids insuffisant<br> 2: poids normal<br> 3: surpoids de niveau I<br> 4: surpoids de niveau II<br> 5: obésité de type I<br> 6: obésité type de II<br> 7: obésité type de III<br> Selon une classification basée sur<br> l'Indice de Masse Corporelle<br> (IMC = Poids/Taille<sup>2</sup>).", unsafe_allow_html=True)
+    st.markdown(f"**Prévision**: :orange[{jeu.faire_classification_2()}]")
+    st.markdown("Classifications possibles:<br> &nbsp;&nbsp;1: poids insuffisant<br> &nbsp;&nbsp;2: poids normal<br> &nbsp;&nbsp;3: surpoids de niveau I<br> &nbsp;&nbsp;4: surpoids de niveau II<br> &nbsp;&nbsp;5: obésité de type I<br> &nbsp;&nbsp;6: obésité type de II<br> &nbsp;&nbsp;7: obésité type de III<br> Une classification basée sur<br> l'Indice de Masse Corporelle<br> (IMC = Poids/Taille<sup>2</sup>)", unsafe_allow_html=True)
 
 st.header("Description")
 
-st.markdown("Les 2 modèles permettent de prédire (classification) la catégorie de poids (actuelle ou future) à partir de métriques de son hygiène de vie.<br><br> Il faut d'abord entrainer les modèles avec les données d'individus dont on connait l'Indice de Masse Corporelle (IMC) avec 19 *features*: les mêmes métriques que ceux dans le bandeau de gauche.<br><br> Les modèles sont testés, validés, puis sauvegardés en format Pickle (format binaire). Les modèles peuvent être importés comme des données. On peut leur attribuer de nouvelles données pour obtenir des prévisions.", unsafe_allow_html=True)
+st.markdown("Les 2 modèles de forêts aléatoires (*Random Forests*) permettent de prédire la catégorie de poids (actuelle ou future) à partir des métriques de son hygiène de vie.<br><br> Il faut d'abord entrainer les modèles avec les données d'individus dont on connait la catégorie de l'Indice de Masse Corporelle (IMC) ou une agrégation de ces catégories (obèse, non obèse) et 19 *features*: les 19 mêmes métriques que ceux dans le bandeau de gauche (chaque moyen de transport compte pour 1).<br><br> Chaque modèle est un ensemble de n estimateurs. Un estimateur est un arbre de décision. Cet arbre permet de trouver un résultat à partir des données qui lui sont fournies. Les données entrent par le cime de l'arbre et cheminent dans les embranchements vers un noeud final: un résultat.", unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.image("img/arbre_a.png", caption="Début d'un arbre (d'un estimateur)", use_column_width=True)
+
+with col2:
+    st.image("img/arbre_b.png", caption="Arbre (estimateur) complet", use_column_width=True)
+
+st.markdown("Chaque modèle compte n estimateurs ou n arbres. Lors d'un prévision, chaque estimateur trouve un résultat. Ensuite, parmi les n résultats obtenus, le résultat majoritaire l'emporte et devient le résultat du modèle. Si le modèle est binomial, il n'y a que 2 classifications possibles. Par exemple, dans un modèle avec 100 estimateurs, il y a 100 résultats; 85 pourraient aller à la classification 1 et 15 à la classification 2. La classification 1 l'emporte et le modèle retourne ce résultat. Avec un modèle multinomial à 7 catégories, il peut y avoir jusqu'à 7 classifications possibles. Le vote tranche entre un maximum de 7 résultats et le modèle retourne ce résultat.<br><br> Enfin, les 2 modèles sont sauvegardés en format Pickle (format binaire). Ce sont des matrices qui permettent de transformer des données à l'entrée en résultat à la sortie. En langage Python, ce sont des objets, bien qu'opaques. <br><br>Modèle (1) binomial avec 135 estimateurs:", unsafe_allow_html=True)
+
+st.write(jeu.modele_1_prediction)
+st.markdown("<br>Modèle (2) multinomial avec 400 estimateurs:", unsafe_allow_html=True)
+st.write(jeu.modele_2_prediction)
+
+st.markdown("<br>Les modèles peuvent être importés. On peut leur attribuer de nouvelles données pour obtenir des prévisions.", unsafe_allow_html=True)
 
 st.subheader("Quelques bémols...")
 
-st.markdown("Avec un jeu de données modeste de 2111 observations (1688 pour l'entrainement et 423 pour les tests), les 2 modèles sont à prendre avec un grain de sel. L'objectif principal est de concrétiser un projet d'analyses des données et de *Machine Learning*, puis de le rendre opérationnel avec ce site web interactif.<br><br> Le Modèle (1) binomial donne un score de justesse de 94.3%. Le Modèle (2) multinomial donne un score de justesse de 84.2%. Les scores sont calculés à partir des matrices de confusion sur le jeu de données de test de 423 observations, ci-dessous.", unsafe_allow_html=True)
+st.markdown("Avec un jeu de données modeste de 2111 observations (1688 pour l'entrainement et 423 pour les tests), les 2 modèles sont à prendre avec un grain de sel. L'objectif principal est de concrétiser un projet d'analyses des données et de *Machine Learning*, puis de le rendre opérationnel avec ce site web interactif.<br><br> Le Modèle (1) binomial donne un score de justesse de 94.3%. C'est un bon score; presque statistiquement significatif à 95%. Ce qui donne un résultat fiable 19 fois sur 20. Le Modèle (2) multinomial donne un score de justesse de 84.2%. Les scores sont calculés à partir des matrices de confusion sur le jeu de données de test de 423 observations, ci-dessous.", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
@@ -433,8 +447,7 @@ with col1:
 with col2:
     st.image("img/matrice2.png", caption="Matrice de confusion 2", use_column_width=True)
 
-st.markdown(
-    "De plus, comme les modèles ont été entrainés avec une métrique Âge dont la moyenne-médiane est de 24.3-22.8 avec un 1er quartiles à 20 et un 3e quartiles à 26, la surreprésentation des vingtenaires dans l'entrainement biaise les prévisions avec d'autres groupes d'âge. D'autant plus que dans les 2 modèles, l'âge demeure le facteur explicatif (*feature*) prépondérant.<br><br> Les 5 premiers facteurs d'impact (en ordre) du Modèle 1: :orange[Âge], :orange[Taille], :orange[Obésité dans la famille (présente ou passée)], :orange[Nombre de repas quotidien] et :orange[Collations entre les repas]. Les 5 premiers facteurs d'impact (en ordre) du Modèle 2: :orange[Âge], :orange[Taille], :orange[Obésité dans la famille (présente ou passée)], :orange[Genre] et :orange[Consommation de légumes avec les repas]. En d'autres mots, ce sont les métriques qui ont le plus d'influence sur les prévisions.", unsafe_allow_html=True)
+st.markdown("Les 2 modèles souffrent de sous-apprentissage avec un manque de données pour les entrainer. Il serait bon de doubler la quantité d'observations sans risquer le sur-apprentissage, car les forêts aléatoires ne sont pas sujètent à ce genre de problème. De plus, comme les modèles ont été entrainés avec une métrique Âge dont la moyenne-médiane est de 24.3-22.8 avec un 1er quartile à 20 et un 3e quartile à 26, la surreprésentation des vingtenaires dans l'entrainement biaise les prévisions avec d'autres groupes d'âge. D'autant plus que dans les 2 modèles, l'âge demeure le facteur explicatif (*feature*) prépondérant.<br><br> Les 5 premiers facteurs d'impact (en ordre) du Modèle 1: :orange[Âge], :orange[Taille], :orange[Obésité dans la famille (présente ou passée)], :orange[Nombre de repas quotidien] et :orange[Collations entre les repas]. Les 5 premiers facteurs d'impact (en ordre) du Modèle 2: :orange[Âge], :orange[Taille], :orange[Obésité dans la famille (présente ou passée)], :orange[Genre] et :orange[Consommation de légumes avec les repas]. En d'autres mots, ce sont les métriques qui ont le plus d'influence sur les prévisions.", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
@@ -443,3 +456,5 @@ with col1:
 
 with col2:
     st.image("img/modele2.png", caption="Modele 2 - % d'influence (sur 100%)", use_column_width=True)
+
+st.markdown("Plus d'observations et plus de représentativité de tous les groupes d'âge donnerait des modèles plus fiables.", unsafe_allow_html=True)
