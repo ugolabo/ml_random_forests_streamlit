@@ -4,12 +4,13 @@ from typing import List, Union
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import joblib
+import matplotlib.pyplot as plt
 
 # Dans le requirements.txt,
 # ne pas installer de modules standards à Python
 
 # Exécuter localement
-# streamlit run 01_Modèle.py
+# streamlit run 01_Modele.py
 
 ##################################################
 # Configurer la page
@@ -269,11 +270,10 @@ metriques = pd.DataFrame([values], columns=keys)
 # 1ere partie
 st.title ("Modèles de classification")
 
-st.header("Instructions et résultats")
+st.subheader("Instructions")
 
-st.markdown("Changer les métriques dans le bandeau de gauche pour alimenter les modèles.<br> Les métriques :orange[colorées] ont le plus d'influence sur les prévisions:", unsafe_allow_html=True)
-
-st.caption(":orange[Genre], :orange[Âge], :orange[Taille (en cm)], :orange[Obésité dans la famille (présente ou passée)], Consommation d'aliments hypercaloriques, :orange[Consommation de légumes avec les repas], :orange[Nombre de repas quotidien], :orange[Collations entre les repas], Tabagisme, Consommation quotidienne d'eau (en litre), Surveillance de sa consommation calorique, Activité physique hebdomadaire (en jour), Temps quotidien d'utilisation d'appareils (en heure), Consommation d'alcool (avec ou sans repas) et Transport le plus utilisé.")
+st.markdown("Changer les métriques dans le bandeau de gauche.")
+st.caption("Les métriques :orange[colorées] ont le plus d'influence sur les prévisions.")
 
 ##################################################
 # Préparer et faire les calculs
@@ -399,23 +399,59 @@ jeu.questionnaire = metriques
 #st.write(jeu.faire_classification_2())
 
 ##################################################
+st.subheader("Résultats")
+
+st.markdown("Comparer les métriques et les résultats sur une échelle égale")
+st.caption("Les catégories des métriques qualitatifs sont toutes converties en nombres. Les métriques binaires deviennent 0 ou 1. Les autres métriques vont de 1 à 3, à 4 ou à 7. Tous les métriques ont été standardisés avec une échelle de 0 à 1. Viennent s'ajouter les résultats binomial et multinomial.")
+
+metriques_2 = metriques.copy()
+#
+metriques_2.rename(columns={"Nobeyesdad_n": "Rien",
+                            "Nobeyesdad_n2": "Binomial"}, inplace=True)
+#
+metriques_2["Multinomial"] = metriques_2["Binomial"]
+#
+metriques_liste = ["Genre", "Âge", "Taille", "Obésité", "Hypercalorique", "Légumes", "Repas", "Collations", "Tabagisme", "Eau", "Surveillance", "Activité", "Appareils", "Alcool", "Automobile", "Motocyclette", "Vélo", "En commun", "Marche", "", "Binomial", "Multinomial"]
+#
+df = pd.DataFrame({'Métrique': metriques_liste,
+                   'Valeur': list(metriques_2.loc[0]),
+                   'Valeur_max': [1, 61, 1.95, 1, 1, 2, 4, 3, 1, 3, 1, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 7],
+                   'Soustracteur': [0, 14, 1.45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                   'Diviseur': [0.25, 11.75, 0.125, 0.25, 0.25, 0.5, 1, 0.75, 0.25, 0.75, 0.25, 0.75, 0.75, 0.75, 0.25, 0.25, 0.25, 0.25, 0.25, 1, 0.25, 7/4]})
+#
+df['Valeur_aj'] = (df['Valeur'] - df['Soustracteur']) / df['Diviseur']
+#
+df['Valeur_max_aj'] = (df['Valeur_max'] - df['Soustracteur']) / df['Diviseur']
+#df
+
+#
+fig, ax = plt.subplots(figsize=(10,1))
+
+plt.bar([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22], df['Valeur_max_aj'], color="dodgerblue", alpha=0.15)
+plt.bar([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22], df['Valeur_aj'], color='orangered')
+plt.xticks([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22], df['Métrique'], rotation=70)
+plt.yticks([1,2,3,4])
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.style.use('dark_background')
+
+st.pyplot(fig)
+
+##################################################
 # Construire l'interface de la page
 # 2e partie
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("Modèle (1) binomial")
-    st.markdown(f"**Prévision**: :orange[{jeu.faire_classification_1()}]")
-    st.markdown("Classifications possibles:<br> &nbsp;&nbsp;0: non obèse<br> &nbsp;&nbsp;1: obèse", unsafe_allow_html=True)
-    st.image("img/random-forests.png", width=225)
+    st.markdown(f"**Modèle (1) binomial**<br> :orange[{jeu.faire_classification_1()}]", unsafe_allow_html=True)
+    st.caption("Classifications possibles:<br> &nbsp;&nbsp;0: non obèse<br> &nbsp;&nbsp;1: obèse", unsafe_allow_html=True)
+    #st.image("img/random-forests.png", width=225)
 
 
 with col2:
-    st.subheader("Modèle (2) multinomial")
-    st.markdown(f"**Prévision**: :orange[{jeu.faire_classification_2()}]")
-    st.markdown("Classifications possibles:<br> &nbsp;&nbsp;1: poids insuffisant<br> &nbsp;&nbsp;2: poids normal<br> &nbsp;&nbsp;3: surpoids de niveau I<br> &nbsp;&nbsp;4: surpoids de niveau II<br> &nbsp;&nbsp;5: obésité de type I<br> &nbsp;&nbsp;6: obésité type de II<br> &nbsp;&nbsp;7: obésité type de III<br> Une classification basée sur<br> l'Indice de Masse Corporelle<br> (IMC = Poids/Taille<sup>2</sup>)", unsafe_allow_html=True)
+    st.markdown(f"**Modèle (2) multinomial**<br> :orange[{jeu.faire_classification_2()}]", unsafe_allow_html=True)
+    st.caption("Classifications possibles:<br> &nbsp;&nbsp;1: poids insuffisant<br> &nbsp;&nbsp;2: poids normal<br> &nbsp;&nbsp;3: surpoids de niveau I<br> &nbsp;&nbsp;4: surpoids de niveau II<br> &nbsp;&nbsp;5: obésité de type I<br> &nbsp;&nbsp;6: obésité type de II<br> &nbsp;&nbsp;7: obésité type de III<br> Une classification basée sur<br> l'Indice de Masse Corporelle<br> (IMC = Poids/Taille<sup>2</sup>)", unsafe_allow_html=True)
 
-st.header("Description")
+st.subheader("Description")
 
 st.markdown("Les 2 modèles de forêts aléatoires (*Random Forests*) permettent de prédire la catégorie de poids (actuelle ou future) à partir des métriques de son hygiène de vie.<br><br> Il faut d'abord entrainer les modèles avec les données d'individus dont on connait la catégorie de l'Indice de Masse Corporelle (IMC) ou une agrégation de ces catégories (obèse, non obèse) et 19 *features*: les 19 mêmes métriques que ceux dans le bandeau de gauche (chaque moyen de transport compte pour 1).<br><br> Chaque modèle est un ensemble de n estimateurs. Un estimateur est un arbre de décision. Cet arbre permet de trouver un résultat à partir des données qui lui sont fournies. Les données entrent par le cime de l'arbre et cheminent dans les embranchements vers un noeud final: un résultat.", unsafe_allow_html=True)
 
