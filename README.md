@@ -14,3 +14,4 @@ Le modèle est implanté dans une interface graphique qui permet de modifier les
 
 ## Mise en place et structure
 
+La structure du repo (répertoires et fichiers) est la configuration requise par Streamlit Cloud pour construire l'interface graphique.
