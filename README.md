@@ -11,3 +11,6 @@ Le modèle est entrainé en deux versions. La version binomiale (basée sur l'é
 Un autre repo est dédié au développement du modèle.
 
 Le modèle est implanté dans une interface graphique qui permet de modifier les facteurs, de relancer le modèle et de faire des prévisions. Bouton droit vers : <a href="https://ugolabo-ml-random-forests-st-01-modele-widb6v.streamlit.app/" target="_blank">site</a>.
+
+## Mise en place et structure
+
