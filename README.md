@@ -1,5 +1,7 @@
 # Machine Learning avec Random Forests; Streamlit 
 
+Le projet est l'étape finale (MLOps) : le déploiement d'un modèle de Machine Learning avec Python. Le modèle prédit la propension à l'obésité.
+
 Le projet consiste à la mise en production d'un modèle de Machine Learning avec Python. Le modèle prédit la propension à l'obésité. Le modèle apprend que l'Indice de Masse Corporelle (IMC) est relié à des facteurs de vie (alimentation, activité, habitudes, etc.). L'hygiène de vie mène à l'obésité ou non. Ces mêmes facteurs servent ensuite à classer si un individu sera obèse à long terme.
 
 <img src="img/arbre_b.png" alt="" width="400px">
