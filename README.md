@@ -1,6 +1,7 @@
 # Machine Learning avec Random Forests; Streamlit 
 
-Le projet est l'étape finale (MLOps) : le déploiement d'un modèle de Machine Learning avec Python. Le modèle prédit la propension à l'obésité.
+Le projet est l'étape finale (MLOps) : le déploiement d'un modèle de Machine Learning avec Python. Le modèle prédit la propension à l'obésité. 
+Bouton droit vers : <a href="https://ugolabo-ml-random-forests-st-01-modele-widb6v.streamlit.app/" target="_blank">site</a>.
 
 <img src="img/ml_random_forests_streamlit.png" alt="" width="300px">
 
