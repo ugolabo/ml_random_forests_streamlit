@@ -13,6 +13,10 @@ Consulter le dépôt les étapes précédant le déploiement : **ml_random_fores
 
 Streamlit permet de construire des apps interactives avec un code source Python. Consulter le projet : TODO.
 
+structure du répertoire 'projet_ml_st', descriptions des fichiers et dossiers, requirements.txt
+
+Note...
+
 La structure du sous-répertoire du projet est la configuration requise par Streamlit Cloud pour construire l'interface graphique. L'app intègre deux morceaux importants : les versions 1 et 2 du modèle en format Pickle. Comme il s'agit d'un modèle de Random Forests, les scalers n'ont pas été retenus. Les Randoms Forests règlent beaucoup de problèmes dont les autres modèles de classification souffrent. Les Random Forests ne sont pas affectées par les disparités de variances entre features.
 
 L'app obtenue est une interface graphique qui permet de modifier les facteurs de vie comme si on fournissait au modèle de nouvelles données. Chaque changement déclenche un calcul des prévisions (c'est l'interaction). Les données entrent dans le modèle et deux prévisions en ressortent : versions 1 et 2 du modèle. 
