@@ -9,9 +9,16 @@ Bouton droit vers : <a href="https://ugolabo-ml-random-forests-st-01-modele-widb
 
 Consulter le dépôt les étapes précédant le déploiement : **ml_random_forests**.
 
+Ce dépôt est l'ancien dépôt qui alimentait Streamlit. Il ne présente que le projet.
+
+Le nouveau dépôt qui alimente Streamlit est : **aaa**.
+Le projet a été mis à jour avec la version 3.12.12 de Python et des versions plus récente des modules indépendants dont Streamlit. 
+
 ## Mise en place et structure
 
 Streamlit permet de construire des apps interactives avec un code source Python. Consulter le projet : TODO.
+
+description ici
 
 structure du répertoire 'projet_ml_st', descriptions des fichiers et dossiers, requirements.txt
 
