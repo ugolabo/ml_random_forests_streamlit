@@ -17,7 +17,7 @@ structure du répertoire 'projet_ml_st', descriptions des fichiers et dossiers, 
 
 Note...
 
-La structure du sous-répertoire du projet est la configuration requise par Streamlit Cloud pour construire l'interface graphique. L'app intègre deux morceaux importants : les versions 1 et 2 du modèle en format Pickle. Comme il s'agit d'un modèle de Random Forests, les scalers n'ont pas été retenus. Les Randoms Forests règlent beaucoup de problèmes dont les autres modèles de classification souffrent. Les Random Forests ne sont pas affectées par les disparités de variances entre features.
+La structure du sous-répertoire du projet est la configuration requise par Streamlit Cloud pour construire l'interface graphique. L'app intègre deux morceaux importants : les versions 1 et 2 du modèle en format Pickle. Comme il s'agit d'un modèle de Random Forests, les scalers n'ont pas été retenus. Avant d'arrêter le choix sur les Random Forests, il y a eu des tests avec d'autres modèles de classification : arbre de décision simple et Support Vector Classification. Ces modèle fonctionnent mieux quand le données sont normalisées ou standardisées avec deux sortes de scalers. Les Randoms Forests règlent beaucoup de problèmes dont les autres modèles de classification souffrent. Entre autres, les Random Forests ne sont pas affectées par les disparités de variances entre features. Il est alors inutile d'utiliser des scalers.
 
 L'app obtenue est une interface graphique qui permet de modifier les facteurs de vie comme si on fournissait au modèle de nouvelles données. Chaque changement déclenche un calcul des prévisions (c'est l'interaction). Les données entrent dans le modèle et deux prévisions en ressortent : versions 1 et 2 du modèle. 
 
