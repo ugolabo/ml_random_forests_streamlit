@@ -11,7 +11,7 @@ Consulter le dépôt les étapes précédant le déploiement : **ml_random_fores
 
 Ce dépôt est l'ancien dépôt qui alimentait Streamlit. Il ne présente que le projet.
 
-Le nouveau dépôt qui alimente Streamlit est : **aaa**.
+Le nouveau dépôt qui alimente Streamlit Cloud est : **aaa**.
 Le projet a été mis à jour avec la version 3.12.12 de Python et des versions plus récente des modules indépendants dont Streamlit. 
 
 ## Mise en place et structure
